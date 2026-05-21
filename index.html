@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PurbanchalPress CMS — Enterprise Newsroom Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --bg2: #141618;
+    --bg3: #1a1c1f;
+    --bg4: #212428;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --gold: #e8a830;
+    --gold2: #f5c55a;
+    --gold-dim: rgba(232,168,48,0.15);
+    --text: #e8e6e0;
+    --text2: #9a9590;
+    --text3: #5c5a55;
+    --red: #e84040;
+    --green: #34c27a;
+    --blue: #4a9eff;
+    --purple: #9b7af0;
+    --teal: #2ec4b6;
+    --r: 6px;
+    --r2: 10px;
+    --sidebar: 230px;
+    --font: 'IBM Plex Sans', sans-serif;
+    --serif: 'Playfair Display', serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .sidebar-brand {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-name {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--gold);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  .brand-sub {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .nav-section {
+    padding: 10px 0 4px;
+  }
+  .nav-label {
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+    padding: 0 16px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active {
+    color: var(--gold);
+    background: var(--gold-dim);
+    border-left-color: var(--gold);
+    font-weight: 500;
+  }
+  .nav-icon { font-size: 14px; flex-shrink: 0; opacity: 0.8; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 10px;
+  }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8a830, #9b7af0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 12px; font-weight: 500; }
+  .user-role { font-size: 10px; color: var(--text3); }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .topbar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .topbar-title span { color: var(--text3); font-weight: 400; }
+  .search-bar {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 5px 12px;
+    color: var(--text);
+    font-size: 12px;
+    font-family: var(--font);
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s;
+  }
+  .search-bar::placeholder { color: var(--text3); }
+  .search-bar:focus { border-color: var(--gold); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--r);
+    font-size: 12px;
+    font-family: var(--font);
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: #1a1200;
+  }
+  .btn-gold:hover { background: var(--gold2); }
+  .btn-ghost {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg4); color: var(--text); }
+  .btn-red { background: rgba(232,64,64,0.15); color: var(--red); border: 1px solid rgba(232,64,64,0.25); }
+
+  /* CONTENT AREA */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  /* BREAKING NEWS TICKER */
+  .breaking-bar {
+    background: var(--red);
+    border-radius: var(--r);
+    padding: 8px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+  }
+  .breaking-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.25);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .breaking-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    animation: ticker 28s linear infinite;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-60%); }
+  }
+  .breaking-toggle {
+    margin-left: auto;
+    font-size: 10px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--font);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  /* STATS ROW */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r2);
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .stat-card:hover { border-color: var(--border2); }
+  .stat-label { font-size: 10.5px; color: var(--text3); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-val { font-size: 22px; font-weight: 600; line-height: 1; margin-bottom: 4px; }
+  .stat-delta { font-size: 10.5px; display: flex; align-items: center; gap: 3px; }
+  .delta-up { color: var(--green); }
+  .delta-down { color: var(--red); }
+
+  /* TWO-COL LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+
+  /* PANEL */
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r2);
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-title { font-size: 13px; font-weight: 600; flex: 1; }
+  .panel-action { font-size: 11px; color: var(--gold); cursor: pointer; }
+  .panel-action:hover { text-decoration: underline; }
+
+  /* ARTICLE TABLE */
+  .article-table { width: 100%; border-collapse: collapse; }
+  .article-table th {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .article-table td {
+    padding: 11px 16px;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .article-table tr:last-child td { border-bottom: none; }
+  .article-table tr:hover td { background: var(--bg3); }
+  .article-title-cell { max-width: 0; width: 42%; }
+  .article-name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .article-meta { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-green { background: rgba(52,194,122,0.15); color: var(--green); }
+  .badge-gold { background: var(--gold-dim); color: var(--gold); }
+  .badge-blue { background: rgba(74,158,255,0.15); color: var(--blue); }
+  .badge-red { background: rgba(232,64,64,0.15); color: var(--red); }
+  .badge-purple { background: rgba(155,122,240,0.15); color: var(--purple); }
+  .badge-teal { background: rgba(46,196,182,0.15); color: var(--teal); }
+  .badge-gray { background: var(--bg4); color: var(--text2); }
+
+  .cat-tag {
+    font-size: 10px;
+    color: var(--text3);
+    background: var(--bg4);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
+  /* SIDEBAR PANELS */
+  .panel-body { padding: 14px 16px; }
+
+  .mini-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+  .mini-list-item:last-child { border-bottom: none; }
+  .mini-list-item:hover { background: var(--bg3); }
+  .mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mini-item-text { flex: 1; overflow: hidden; }
+  .mini-item-title { font-weight: 500; color: var(--text); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini-item-sub { font-size: 10.5px; color: var(--text3); margin-top: 1px; }
+  .mini-rank { font-size: 10.5px; color: var(--text3); font-family: var(--mono); }
+
+  /* AD MANAGER */
+  .ad-zone {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .ad-zone:hover { border-color: var(--border2); }
+  .ad-zone-name { font-size: 12px; font-weight: 500; flex: 1; }
+  .ad-zone-sub { font-size: 10.5px; color: var(--text3); }
+  .ad-fill-bar { height: 3px; background: var(--bg4); border-radius: 2px; margin-top: 4px; overflow: hidden; width: 80px; }
+  .ad-fill-inner { height: 100%; border-radius: 2px; }
+
+  /* WORKFLOW */
+  .workflow-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .workflow-step:last-child { border-bottom: none; }
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-done { background: rgba(52,194,122,0.2); color: var(--green); }
+  .step-active { background: var(--gold-dim); color: var(--gold); }
+  .step-pending { background: var(--bg4); color: var(--text3); }
+  .step-title { font-weight: 500; }
+  .step-sub { font-size: 10.5px; color: var(--text3); }
+
+  /* BOTTOM ROW */
+  .bottom-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+
+  /* MINI CHART */
+  .sparkline-row { display: flex; align-items: flex-end; gap: 3px; height: 36px; padding: 4px 0; }
+  .spark-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--gold-dim); min-width: 8px; transition: background 0.2s; cursor: pointer; }
+  .spark-bar:hover { background: var(--gold); }
+  .spark-bar.today { background: var(--gold); }
+
+  /* LANGUAGE TOGGLE */
+  .lang-pills { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .lang-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    background: transparent;
+    font-family: var(--font);
+    transition: all 0.15s;
+  }
+  .lang-pill:hover { border-color: var(--border2); color: var(--text); }
+  .lang-pill.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); font-weight: 500; }
+
+  /* PERMISSION GRID */
+  .perm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 14px 16px; }
+  .perm-role {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .perm-role:hover { border-color: var(--border2); }
+  .perm-role-name { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .perm-count { font-size: 10px; color: var(--text3); }
+
+  /* STATUS DOTS */
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: var(--green); box-shadow: 0 0 4px var(--green); }
+  .dot-gold { background: var(--gold); box-shadow: 0 0 4px var(--gold); }
+  .dot-red { background: var(--red); box-shadow: 0 0 4px var(--red); }
+  .dot-gray { background: var(--text3); }
+
+  /* SEO SCORE */
+  .seo-item { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .seo-item:last-child { border-bottom: none; }
+  .seo-score-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+  }
+
+  /* TABS */
+  .tab-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); padding: 0 16px; }
+  .tab {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+  /* SECTION HEADING ROW */
+  .section-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .section-heading { font-size: 13px; font-weight: 600; flex: 1; }
+
+  /* EPAPER PREVIEW */
+  .epaper-thumb {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    aspect-ratio: 3/4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .epaper-thumb:hover { border-color: var(--gold); }
+  .epaper-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 16px; }
+  .epaper-date { font-size: 10px; color: var(--text3); margin-top: 4px; }
+  .epaper-edition { font-size: 12px; font-weight: 500; }
+  .epaper-icon { font-size: 28px; color: var(--text3); }
+
+  /* NOTIFICATION BAR */
+  .notif {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--r);
+    font-size: 12px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+  }
+  .notif-warn { background: rgba(232,168,48,0.1); border-color: rgba(232,168,48,0.2); color: var(--gold); }
+  .notif-success { background: rgba(52,194,122,0.1); border-color: rgba(52,194,122,0.2); color: var(--green); }
+  .notif-info { background: rgba(74,158,255,0.1); border-color: rgba(74,158,255,0.2); color: var(--blue); }
+  .notif-icon { font-size: 14px; }
+
+  /* TOGGLE SWITCH */
+  .toggle-row { display: flex; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--border); gap: 10px; font-size: 12px; }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { flex: 1; font-weight: 500; }
+  .toggle-sub { font-size: 10.5px; color: var(--text3); }
+  .toggle {
+    width: 34px; height: 18px;
+    background: var(--bg4);
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .toggle.on { background: var(--gold); border-color: var(--gold); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--text3);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle.on::after { transform: translateX(16px); background: #fff; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { background: var(--bg4); border-radius: 3px; height: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+
+  .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+  .tag { display: inline-flex; gap: 4px; align-items: center; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 6px; border-radius: 3px; }
+
+  .text-gold { color: var(--gold); }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-blue { color: var(--blue); }
+  .text-muted { color: var(--text3); }
+  .text-sm { font-size: 11px; }
+  .font-mono { font-family: var(--mono); }
+
+  /* RESPONSIVE AWARE */
+  @media (max-width: 1200px) {
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .bottom-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-name">PurbanchalPress</div>
+    <div class="brand-sub">NE India Digital Newsroom</div>
+  </div>
+
+  <nav>
+    <div class="nav-section">
+      <div class="nav-label">Newsroom</div>
+      <div class="nav-item active" onclick="switchTab(this,'dashboard')">
+        <span class="nav-icon">⬡</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'articles')">
+        <span class="nav-icon">✦</span> Articles
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'breaking')">
+        <span class="nav-icon">⚡</span> Breaking News
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'epaper')">
+        <span class="nav-icon">◫</span> E-Paper Upload
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'schedule')">
+        <span class="nav-icon">◷</span> Scheduled Posts
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-label">Content</div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">⬒</span> Pages
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">▤</span> Categories
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◈</span> Tags
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">⬛</span> Media Library
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◉</span> Polls & Surveys
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-label">Monetization</div>
+      <div class="nav-item" onclick="switchTab(this,'ads')">
+        <span class="nav-icon">▣</span> Advertisements
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◎</span> Newsletter
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◐</span> Subscriptions
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-label">System</div>
+      <div class="nav-item" onclick="switchTab(this,'seo')">
+        <span class="nav-icon">◯</span> SEO Manager
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◻</span> Menu Builder
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">⬡</span> Widgets
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'users')">
+        <span class="nav-icon">◬</span> Users & Roles
+      </div>
+      <div class="nav-item" onclick="switchTab(this,'analytics')">
+        <span class="nav-icon">◈</span> Analytics
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◫</span> Theme Settings
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">▦</span> Redirects
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◳</span> Backups
+      </div>
+      <div class="nav-item" onclick="switchTab(this)">
+        <span class="nav-icon">◴</span> System Logs
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">RD</div>
+    <div>
+      <div class="user-name">Rajib Das</div>
+      <div class="user-role">Super Admin</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN AREA -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard <span>/ Overview</span></div>
+    <input class="search-bar" type="text" placeholder="Search articles, media, users…">
+    <button class="btn btn-ghost" onclick="alert('Homepage builder coming live in final build')">🏗 Page Builder</button>
+    <button class="btn btn-gold" onclick="showNewArticle()">+ New Article</button>
+    <div class="avatar" style="width:30px;height:30px;cursor:pointer" title="Notifications">🔔</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content-area">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard">
+
+      <!-- BREAKING TICKER -->
+      <div class="breaking-bar">
+        <span class="breaking-label">Breaking</span>
+        <span class="breaking-text">
+          ৷ Assam Flood Relief: CM Himanta announces ₹500 crore package for Kaziranga belt &nbsp;&nbsp;|&nbsp;&nbsp;
+          ৷ Manipur: Peace talks resume in Imphal; COCOMI observes bandh called off &nbsp;&nbsp;|&nbsp;&nbsp;
+          ৷ Meghalaya Coal Mining: NGT orders review of Jaintia Hills operations &nbsp;&nbsp;|&nbsp;&nbsp;
+          ৷ Nagaland: Framework agreement deadline extended — NSCN(IM) responds &nbsp;&nbsp;|&nbsp;&nbsp;
+          ৷ Arunachal Pradesh: New highway corridor inaugurated connecting Itanagar to Tawang &nbsp;&nbsp;|&nbsp;&nbsp;
+          ৷ Sikkim: GLOF early warning system expanded to Teesta basin
+        </span>
+        <button class="breaking-toggle" onclick="toggleBreaking(this)">LIVE ●</button>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="notif notif-warn">
+        <span class="notif-icon">⚠</span>
+        <span>3 articles pending editorial review — <b>Reporter → Editor</b> workflow queue</span>
+        <button class="btn btn-ghost" style="margin-left:auto;padding:3px 10px;font-size:11px" onclick="switchToTab('articles')">Review</button>
+      </div>
+      <div class="notif notif-success" style="margin-top:-2px">
+        <span class="notif-icon">✓</span>
+        <span>Guwahati Morning Edition e-paper uploaded successfully — 18 May 2025</span>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid" style="margin-top:16px">
+        <div class="stat-card">
+          <div class="stat-label">Today's Visitors</div>
+          <div class="stat-val text-gold">48,230</div>
+          <div class="stat-delta delta-up">▲ 12.4% vs yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Published Today</div>
+          <div class="stat-val">27</div>
+          <div class="stat-delta delta-up">▲ 4 articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-val text-gold">3</div>
+          <div class="stat-delta" style="color:var(--text3)">Reporter → Editor</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ad Impressions</div>
+          <div class="stat-val">1.2M</div>
+          <div class="stat-delta delta-up">▲ 8.1% this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Newsletter Subs</div>
+          <div class="stat-val">9,841</div>
+          <div class="stat-delta delta-up">▲ 56 new today</div>
+        </div>
+      </div>
+
+      <!-- TWO COL -->
+      <div class="two-col">
+
+        <!-- LEFT: RECENT ARTICLES -->
+        <div>
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Recent Articles</div>
+              <div class="tab-row" style="padding:0;border:none;margin-left:auto;gap:0">
+                <div class="tab active" style="padding:0 10px;font-size:11px">All</div>
+                <div class="tab" style="padding:0 10px;font-size:11px">Pending</div>
+                <div class="tab" style="padding:0 10px;font-size:11px">Draft</div>
+              </div>
+              <div class="panel-action" style="margin-left:10px">View all →</div>
+            </div>
+            <table class="article-table">
+              <thead>
+                <tr>
+                  <th>Article</th>
+                  <th>Category</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Views</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">অসমৰ বান পীড়িত ৰাইজলৈ ৰাহত সামগ্ৰী বিতৰণ</div>
+                    <div class="article-meta">Guwahati Bureau · 2 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Assam</span></td>
+                  <td class="text-muted text-sm">Priya Kakati</td>
+                  <td><span class="badge badge-green">Published</span></td>
+                  <td class="font-mono text-sm">4,211</td>
+                  <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td>
+                </tr>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">Manipur Peace Talks: Both Sides Agree to Ceasefire Extension</div>
+                    <div class="article-meta">Imphal Desk · 5 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Manipur</span></td>
+                  <td class="text-muted text-sm">Sonia Yumnam</td>
+                  <td><span class="badge badge-gold">Review</span></td>
+                  <td class="font-mono text-sm">—</td>
+                  <td><button class="btn btn-gold" style="padding:3px 8px;font-size:11px">Approve</button></td>
+                </tr>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">सिक्किम: तीस्ता जलविद्युत परियोजना पुनर्निर्माणको काम थाल्यो</div>
+                    <div class="article-meta">Gangtok · Nepali Edition · 6 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Sikkim</span></td>
+                  <td class="text-muted text-sm">Biren Rai</td>
+                  <td><span class="badge badge-green">Published</span></td>
+                  <td class="font-mono text-sm">3,088</td>
+                  <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td>
+                </tr>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">Nagaland Framework: NSCN(IM) Demands Fresh Timeline</div>
+                    <div class="article-meta">Kohima Bureau · 9 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Nagaland</span></td>
+                  <td class="text-muted text-sm">Akum Longchar</td>
+                  <td><span class="badge badge-blue">Scheduled</span></td>
+                  <td class="font-mono text-sm">—</td>
+                  <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td>
+                </tr>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">Kaziranga Rhino Census 2025: Population at Record High</div>
+                    <div class="article-meta">Wildlife Desk · 11 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Wildlife</span></td>
+                  <td class="text-muted text-sm">Dipak Bora</td>
+                  <td><span class="badge badge-green">Published</span></td>
+                  <td class="font-mono text-sm">12,540</td>
+                  <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td>
+                </tr>
+                <tr>
+                  <td class="article-title-cell">
+                    <div class="article-name">মিজোরামত নতুন আবাসিক প্ৰকল্পৰ শিলান্যাস</div>
+                    <div class="article-meta">Aizawl · 14 hrs ago</div>
+                  </td>
+                  <td><span class="cat-tag">Mizoram</span></td>
+                  <td class="text-muted text-sm">Lalrinpuii</td>
+                  <td><span class="badge badge-gray">Draft</span></td>
+                  <td class="font-mono text-sm">—</td>
+                  <td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- BOTTOM: WORKFLOW + ANALYTICS -->
+          <div class="bottom-row">
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Editorial Workflow</div>
+                <span class="badge badge-gold" style="margin-left:auto">3 pending</span>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num step-done">✓</div>
+                <div>
+                  <div class="step-title">Reporter Submits</div>
+                  <div class="step-sub">Auto-saved draft → Review queue</div>
+                </div>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num step-active">2</div>
+                <div>
+                  <div class="step-title" style="color:var(--gold)">Editor Review</div>
+                  <div class="step-sub">3 articles awaiting approval</div>
+                </div>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num step-pending">3</div>
+                <div>
+                  <div class="step-title">SEO Check</div>
+                  <div class="step-sub">Meta + slug validation</div>
+                </div>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num step-pending">4</div>
+                <div>
+                  <div class="step-title">Publish / Schedule</div>
+                  <div class="step-sub">Auto-post to homepage</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Traffic (7 days)</div>
+              </div>
+              <div class="panel-body">
+                <div class="sparkline-row" id="spark-row"></div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px">
+                  <span class="text-muted text-sm">Mon</span>
+                  <span class="text-muted text-sm">Sun</span>
+                </div>
+                <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div>
+                    <div class="stat-label">Peak day</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--gold)">48.2K</div>
+                  </div>
+                  <div>
+                    <div class="stat-label">Avg/day</div>
+                    <div style="font-size:13px;font-weight:600">38.4K</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Content by Region</div></div>
+              <div class="panel-body">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Assam</span><span class="font-mono">42%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:42%;background:var(--gold)"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Manipur</span><span class="font-mono">18%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:18%;background:var(--blue)"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Nagaland</span><span class="font-mono">12%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:12%;background:var(--teal)"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Meghalaya</span><span class="font-mono">10%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:10%;background:var(--purple)"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Sikkim</span><span class="font-mono">8%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:8%;background:var(--green)"></div></div>
+                  </div>
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                      <span>Others (Tripura/Arun/Mizo)</span><span class="font-mono">10%</span>
+                    </div>
+                    <div class="progress-wrap"><div class="progress-fill" style="width:10%;background:var(--text3)"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR PANELS -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <!-- MOST READ -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Most Read Today</div>
+              <div class="panel-action">All →</div>
+            </div>
+            <div class="mini-list-item">
+              <span class="mini-rank">01</span>
+              <div class="mini-item-text">
+                <div class="mini-item-title">Kaziranga Rhino Census 2025: Record Population</div>
+                <div class="mini-item-sub">12,540 views · Wildlife</div>
+              </div>
+            </div>
+            <div class="mini-list-item">
+              <span class="mini-rank">02</span>
+              <div class="mini-item-text">
+                <div class="mini-item-title">Guwahati Metro Phase 2: DPR Approved</div>
+                <div class="mini-item-sub">9,210 views · Assam</div>
+              </div>
+            </div>
+            <div class="mini-list-item">
+              <span class="mini-rank">03</span>
+              <div class="mini-item-text">
+                <div class="mini-item-title">অসমৰ বান পীড়িত: ৰাহত সামগ্ৰী বিতৰণ</div>
+                <div class="mini-item-sub">4,211 views · Assam</div>
+              </div>
+            </div>
+            <div class="mini-list-item">
+              <span class="mini-rank">04</span>
+              <div class="mini-item-text">
+                <div class="mini-item-title">सिक्किम: तीस्ता जलविद्युत — Nepali Edition</div>
+                <div class="mini-item-sub">3,088 views · Sikkim</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LANGUAGE EDITIONS -->
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Language Editions</div></div>
+            <div class="lang-pills">
+              <button class="lang-pill active">English</button>
+              <button class="lang-pill">অসমীয়া</button>
+              <button class="lang-pill">नेपाली</button>
+              <button class="lang-pill">বাংলা</button>
+              <button class="lang-pill">মৈতৈলোন্</button>
+              <button class="lang-pill">Bodo</button>
+            </div>
+            <div style="padding:8px 16px 12px">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Content distribution today</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span class="badge badge-gold">EN: 18</span>
+                <span class="badge badge-blue">অসমীয়া: 6</span>
+                <span class="badge badge-teal">नेपाली: 2</span>
+                <span class="badge badge-purple">বাংলা: 1</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADS PANEL -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Ad Zones</div>
+              <div class="panel-action">Manage →</div>
+            </div>
+            <div style="padding:12px 16px">
+              <div class="ad-zone">
+                <div>
+                  <div class="ad-zone-name">Homepage Hero Banner</div>
+                  <div class="ad-zone-sub">1 active · expires Jun 15</div>
+                  <div class="ad-fill-bar"><div class="ad-fill-inner" style="width:85%;background:var(--green)"></div></div>
+                </div>
+                <span class="badge badge-green">Live</span>
+              </div>
+              <div class="ad-zone">
+                <div>
+                  <div class="ad-zone-name">Sidebar Rectangle</div>
+                  <div class="ad-zone-sub">2 active · rotating</div>
+                  <div class="ad-fill-bar"><div class="ad-fill-inner" style="width:60%;background:var(--gold)"></div></div>
+                </div>
+                <span class="badge badge-gold">Live</span>
+              </div>
+              <div class="ad-zone">
+                <div>
+                  <div class="ad-zone-name">Article Inline (Mid)</div>
+                  <div class="ad-zone-sub">1 active · 3 days left</div>
+                  <div class="ad-fill-bar"><div class="ad-fill-inner" style="width:30%;background:var(--red)"></div></div>
+                </div>
+                <span class="badge badge-red">Expiring</span>
+              </div>
+              <div class="ad-zone">
+                <div>
+                  <div class="ad-zone-name">Mobile Sticky Footer</div>
+                  <div class="ad-zone-sub">Available · no booking</div>
+                  <div class="ad-fill-bar"><div class="ad-fill-inner" style="width:0%"></div></div>
+                </div>
+                <span class="badge badge-gray">Open</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- E-PAPER QUICK VIEW -->
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Latest E-Papers</div>
+              <div class="panel-action">Upload +</div>
+            </div>
+            <div class="epaper-grid">
+              <div>
+                <div class="epaper-thumb">
+                  <div style="text-align:center;padding:10px">
+                    <div style="font-family:var(--serif);font-size:11px;color:var(--gold);margin-bottom:4px">পূৰ্বাঞ্চল প্ৰেছ</div>
+                    <div style="font-size:9px;color:var(--text3);margin-bottom:6px">GUWAHATI EDITION</div>
+                    <div style="background:var(--border);height:1px;margin-bottom:6px"></div>
+                    <div style="font-size:8px;color:var(--text3);line-height:1.5">FLOODS · POLITICS<br>NE SPORTS · BUSINESS</div>
+                  </div>
+                </div>
+                <div class="epaper-edition">Guwahati</div>
+                <div class="epaper-date">18 May 2025</div>
+              </div>
+              <div>
+                <div class="epaper-thumb">
+                  <div style="text-align:center;padding:10px">
+                    <div style="font-family:var(--serif);font-size:11px;color:var(--gold);margin-bottom:4px">पूर्वाञ्चल</div>
+                    <div style="font-size:9px;color:var(--text3);margin-bottom:6px">SIKKIM EDITION</div>
+                    <div style="background:var(--border);height:1px;margin-bottom:6px"></div>
+                    <div style="font-size:8px;color:var(--text3);line-height:1.5">नेपाली भाषा<br>SIKKIM · DARJEELING</div>
+                  </div>
+                </div>
+                <div class="epaper-edition">Gangtok</div>
+                <div class="epaper-date">18 May 2025</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTICLES VIEW (hidden) -->
+    <div id="view-articles" style="display:none">
+      <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center">
+        <span style="font-size:13px;font-weight:600">Article Manager</span>
+        <span class="badge badge-gold" style="margin-left:4px">3 pending review</span>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <select style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:var(--r);font-size:12px;font-family:var(--font);outline:none">
+            <option>All Languages</option>
+            <option>English</option>
+            <option>অসমীয়া</option>
+            <option>नेपाली</option>
+            <option>বাংলা</option>
+          </select>
+          <select style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:var(--r);font-size:12px;font-family:var(--font);outline:none">
+            <option>All States</option>
+            <option>Assam</option>
+            <option>Manipur</option>
+            <option>Nagaland</option>
+            <option>Meghalaya</option>
+            <option>Sikkim</option>
+            <option>Mizoram</option>
+            <option>Tripura</option>
+            <option>Arunachal Pradesh</option>
+          </select>
+          <button class="btn btn-gold">+ New Article</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">All Articles</div>
+          <span class="text-muted text-sm" style="margin-left:auto">Showing 6 of 1,240</span>
+        </div>
+        <table class="article-table">
+          <thead><tr><th>Article</th><th>State</th><th>Language</th><th>Author</th><th>Status</th><th>Scheduled</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="article-title-cell" style="width:35%"><div class="article-name">অসমৰ বান পীড়িত ৰাইজলৈ ৰাহত সামগ্ৰী বিতৰণ</div><div class="article-meta">Guwahati Bureau</div></td>
+              <td><span class="cat-tag">Assam</span></td>
+              <td><span class="badge badge-blue">অসমীয়া</span></td>
+              <td class="text-muted text-sm">Priya Kakati</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td class="text-muted text-sm">—</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button><button class="btn btn-red" style="padding:3px 8px;font-size:11px">Revisions</button></div></td>
+            </tr>
+            <tr>
+              <td class="article-title-cell"><div class="article-name">Manipur Peace Talks: Both Sides Agree to Ceasefire Extension</div><div class="article-meta">Imphal Desk</div></td>
+              <td><span class="cat-tag">Manipur</span></td>
+              <td><span class="badge badge-gold">English</span></td>
+              <td class="text-muted text-sm">Sonia Yumnam</td>
+              <td><span class="badge badge-gold">⏳ Review</span></td>
+              <td class="text-muted text-sm">—</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-gold" style="padding:3px 8px;font-size:11px">Approve</button><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Reject</button></div></td>
+            </tr>
+            <tr>
+              <td class="article-title-cell"><div class="article-name">सिक्किम: तीस्ता जलविद्युत परियोजना पुनर्निर्माणको काम थाल्यो</div><div class="article-meta">Gangtok · Nepali Edition</div></td>
+              <td><span class="cat-tag">Sikkim</span></td>
+              <td><span class="badge badge-teal">नेपाली</span></td>
+              <td class="text-muted text-sm">Biren Rai</td>
+              <td><span class="badge badge-green">Published</span></td>
+              <td class="text-muted text-sm">—</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></div></td>
+            </tr>
+            <tr>
+              <td class="article-title-cell"><div class="article-name">Nagaland Framework: NSCN(IM) Demands Fresh Timeline</div><div class="article-meta">Kohima Bureau</div></td>
+              <td><span class="cat-tag">Nagaland</span></td>
+              <td><span class="badge badge-gold">English</span></td>
+              <td class="text-muted text-sm">Akum Longchar</td>
+              <td><span class="badge badge-blue">Scheduled</span></td>
+              <td class="text-muted text-sm">20 May 8:00 AM</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Edit</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEO VIEW -->
+    <div id="view-seo" style="display:none">
+      <div class="two-col">
+        <div>
+          <div class="panel" style="margin-bottom:14px">
+            <div class="panel-head"><div class="panel-title">SEO Health Overview</div><span class="badge badge-green" style="margin-left:auto">Score: 84/100</span></div>
+            <div class="seo-item">
+              <div class="seo-score-circle" style="border-color:var(--green);color:var(--green)">92</div>
+              <div><div style="font-size:12px;font-weight:500">Meta Titles & Descriptions</div><div class="text-muted text-sm">230/240 articles optimised</div></div>
+              <span class="badge badge-green" style="margin-left:auto">Good</span>
+            </div>
+            <div class="seo-item">
+              <div class="seo-score-circle" style="border-color:var(--gold);color:var(--gold)">76</div>
+              <div><div style="font-size:12px;font-weight:500">OpenGraph / Social Images</div><div class="text-muted text-sm">51 articles missing OG image</div></div>
+              <span class="badge badge-gold" style="margin-left:auto">Fix needed</span>
+            </div>
+            <div class="seo-item">
+              <div class="seo-score-circle" style="border-color:var(--green);color:var(--green)">98</div>
+              <div><div style="font-size:12px;font-weight:500">XML Sitemap</div><div class="text-muted text-sm">Auto-updated · submitted to Google News</div></div>
+              <span class="badge badge-green" style="margin-left:auto">Good</span>
+            </div>
+            <div class="seo-item">
+              <div class="seo-score-circle" style="border-color:var(--red);color:var(--red)">45</div>
+              <div><div style="font-size:12px;font-weight:500">Schema Markup</div><div class="text-muted text-sm">NewsArticle schema missing on 88 articles</div></div>
+              <span class="badge badge-red" style="margin-left:auto">Fix now</span>
+            </div>
+            <div class="seo-item">
+              <div class="seo-score-circle" style="border-color:var(--green);color:var(--green)">100</div>
+              <div><div style="font-size:12px;font-weight:500">Canonical URLs</div><div class="text-muted text-sm">All set · no duplicates detected</div></div>
+              <span class="badge badge-green" style="margin-left:auto">Good</span>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">301 Redirect Manager</div><button class="btn btn-gold" style="margin-left:auto;padding:4px 10px;font-size:11px">+ Add Redirect</button></div>
+            <table class="article-table">
+              <thead><tr><th>From</th><th>To</th><th>Type</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="font-mono" style="font-size:11px;color:var(--text3)">/old-flood-news</td><td class="font-mono" style="font-size:11px;color:var(--blue)">/assam/floods-2025</td><td><span class="badge badge-gold">301</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td class="font-mono" style="font-size:11px;color:var(--text3)">/manipur-crisis</td><td class="font-mono" style="font-size:11px;color:var(--blue)">/manipur/peace-talks</td><td><span class="badge badge-gold">301</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td class="font-mono" style="font-size:11px;color:var(--text3)">/e-paper</td><td class="font-mono" style="font-size:11px;color:var(--blue)">/epaper/latest</td><td><span class="badge badge-blue">302</span></td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Site-level SEO Settings</div></div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Google News Sitemap</div><div class="toggle-sub">Submit NE India news to Google News</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Hreflang for Multilingual</div><div class="toggle-sub">EN / অসমীয়া / नेपाली tags</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Auto-generate Schema</div><div class="toggle-sub">NewsArticle + BreadcrumbList</div></div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Canonical for Translated</div><div class="toggle-sub">Point नेपाली / অসমীয়া to source</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Noindex Archive Pages</div><div class="toggle-sub">Prevent duplicate content issues</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS VIEW -->
+    <div id="view-users" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Roles & Permissions (RBAC)</div><button class="btn btn-gold" style="margin-left:auto;padding:4px 10px;font-size:11px">+ Add User</button></div>
+        <div class="perm-grid">
+          <div class="perm-role" style="border-left:3px solid var(--gold)">
+            <div class="perm-role-name" style="color:var(--gold)">Super Admin</div>
+            <div class="perm-count">2 users · Full access</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--blue)">
+            <div class="perm-role-name" style="color:var(--blue)">Admin</div>
+            <div class="perm-count">3 users · No billing</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--green)">
+            <div class="perm-role-name" style="color:var(--green)">Editor</div>
+            <div class="perm-count">6 users · Publish + approve</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--teal)">
+            <div class="perm-role-name" style="color:var(--teal)">Reporter</div>
+            <div class="perm-count">14 users · Submit drafts</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--purple)">
+            <div class="perm-role-name" style="color:var(--purple)">Ad Manager</div>
+            <div class="perm-count">2 users · Ad zone only</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--red)">
+            <div class="perm-role-name" style="color:var(--red)">SEO Manager</div>
+            <div class="perm-count">1 user · SEO panel</div>
+          </div>
+          <div class="perm-role" style="border-left:3px solid var(--text3)">
+            <div class="perm-role-name">PDF Manager</div>
+            <div class="perm-count">2 users · E-paper upload</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Active Sessions</div></div>
+          <div class="mini-list-item"><div class="status-dot dot-green"></div><div class="mini-item-text"><div class="mini-item-title">Rajib Das (Super Admin)</div><div class="mini-item-sub">Guwahati · Chrome · Now</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-green"></div><div class="mini-item-text"><div class="mini-item-title">Priya Kakati (Reporter)</div><div class="mini-item-sub">Dibrugarh · Firefox · 5m ago</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-gold"></div><div class="mini-item-text"><div class="mini-item-title">Sonia Yumnam (Reporter)</div><div class="mini-item-sub">Imphal · Mobile · 18m ago</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-gray"></div><div class="mini-item-text"><div class="mini-item-title">Biren Rai (Reporter)</div><div class="mini-item-sub">Gangtok · Chrome · 2h ago</div></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Activity Log</div></div>
+          <div class="mini-list-item"><div class="status-dot dot-green"></div><div class="mini-item-text"><div class="mini-item-title">Priya Kakati published article</div><div class="mini-item-sub">অসমৰ বান পীড়িত... · 2h ago</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-gold"></div><div class="mini-item-text"><div class="mini-item-title">Sonia Yumnam submitted for review</div><div class="mini-item-sub">Manipur Peace Talks · 5h ago</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-green"></div><div class="mini-item-text"><div class="mini-item-title">Rajib Das uploaded e-paper</div><div class="mini-item-sub">Guwahati Edition · 7h ago</div></div></div>
+          <div class="mini-list-item"><div class="status-dot dot-gray"></div><div class="mini-item-text"><div class="mini-item-title">Biren Rai updated article</div><div class="mini-item-sub">Sikkim GLOF article · 9h ago</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS VIEW -->
+    <div id="view-analytics" style="display:none">
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+        <div class="stat-card"><div class="stat-label">Total Visitors (Month)</div><div class="stat-val text-gold">1.2M</div><div class="stat-delta delta-up">▲ 18.2% MoM</div></div>
+        <div class="stat-card"><div class="stat-label">Pageviews</div><div class="stat-val">4.8M</div><div class="stat-delta delta-up">▲ 22%</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Session</div><div class="stat-val">3:42</div><div class="stat-delta delta-up">▲ 14s</div></div>
+        <div class="stat-card"><div class="stat-label">Bounce Rate</div><div class="stat-val">48%</div><div class="stat-delta delta-down">▼ 2.1%</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Traffic Sources</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Organic Search</span><span class="font-mono">44%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:44%;background:var(--green)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Direct</span><span class="font-mono">22%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:22%;background:var(--blue)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Facebook / WhatsApp</span><span class="font-mono">20%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:20%;background:var(--purple)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Google News</span><span class="font-mono">10%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:10%;background:var(--gold)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Other Social</span><span class="font-mono">4%</span></div><div class="progress-wrap"><div class="progress-fill" style="width:4%;background:var(--teal)"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Top Categories</div></div>
+          <div class="mini-list-item"><span class="mini-rank">01</span><div class="mini-item-text"><div class="mini-item-title">Assam</div><div class="mini-item-sub">380K views this month</div></div><span class="badge badge-gold">31%</span></div>
+          <div class="mini-list-item"><span class="mini-rank">02</span><div class="mini-item-text"><div class="mini-item-title">Politics</div><div class="mini-item-sub">220K views</div></div><span class="badge badge-blue">18%</span></div>
+          <div class="mini-list-item"><span class="mini-rank">03</span><div class="mini-item-text"><div class="mini-item-title">Manipur</div><div class="mini-item-sub">195K views</div></div><span class="badge badge-purple">16%</span></div>
+          <div class="mini-list-item"><span class="mini-rank">04</span><div class="mini-item-text"><div class="mini-item-title">Wildlife / Kaziranga</div><div class="mini-item-sub">148K views</div></div><span class="badge badge-green">12%</span></div>
+          <div class="mini-list-item"><span class="mini-rank">05</span><div class="mini-item-text"><div class="mini-item-title">Sikkim (नेपाली)</div><div class="mini-item-sub">96K views</div></div><span class="badge badge-teal">8%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADS VIEW -->
+    <div id="view-ads" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Advertisement Zones</div><button class="btn btn-gold" style="margin-left:auto;padding:4px 10px;font-size:11px">+ New Ad</button></div>
+          <table class="article-table">
+            <thead><tr><th>Zone</th><th>Advertiser</th><th>Impressions</th><th>Clicks</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Homepage Hero</td><td>Assam Tourism</td><td class="font-mono">48,220</td><td class="font-mono">1,240</td><td><span class="badge badge-green">Live</span></td></tr>
+              <tr><td>Sidebar 300×250</td><td>SBI Guwahati</td><td class="font-mono">32,100</td><td class="font-mono">488</td><td><span class="badge badge-green">Live</span></td></tr>
+              <tr><td>Article Inline</td><td>NEIGRIHMS</td><td class="font-mono">18,450</td><td class="font-mono">210</td><td><span class="badge badge-red">Expiring</span></td></tr>
+              <tr><td>Footer Banner</td><td>—</td><td class="font-mono">—</td><td class="font-mono">—</td><td><span class="badge badge-gray">Open</span></td></tr>
+              <tr><td>Mobile Sticky</td><td>—</td><td class="font-mono">—</td><td class="font-mono">—</td><td><span class="badge badge-gray">Open</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Ad Performance (This Month)</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div style="background:var(--bg3);border-radius:var(--r);padding:12px"><div class="stat-label">Total Impressions</div><div style="font-size:20px;font-weight:600;color:var(--gold)">1.2M</div></div>
+                <div style="background:var(--bg3);border-radius:var(--r);padding:12px"><div class="stat-label">Total Clicks</div><div style="font-size:20px;font-weight:600">24,840</div></div>
+                <div style="background:var(--bg3);border-radius:var(--r);padding:12px"><div class="stat-label">Avg CTR</div><div style="font-size:20px;font-weight:600;color:var(--green)">2.1%</div></div>
+                <div style="background:var(--bg3);border-radius:var(--r);padding:12px"><div class="stat-label">Revenue Est.</div><div style="font-size:20px;font-weight:600">₹1.8L</div></div>
+              </div>
+              <div class="notif notif-warn"><span class="notif-icon">⚠</span><span>Article Inline ad expiring in 3 days — renew or replace</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW ARTICLE MODAL -->
+    <div id="new-article-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center">
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);width:680px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <div style="font-size:14px;font-weight:600">New Article</div>
+          <div style="display:flex;gap:6px;margin-left:auto">
+            <button class="lang-pill active" style="font-size:11px">English</button>
+            <button class="lang-pill" style="font-size:11px">অসমীয়া</button>
+            <button class="lang-pill" style="font-size:11px">नेपाली</button>
+            <button class="lang-pill" style="font-size:11px">বাংলা</button>
+          </div>
+          <button onclick="document.getElementById('new-article-modal').style.display='none'" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;margin-left:8px">✕</button>
+        </div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+          <input type="text" placeholder="Article headline…" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:16px;font-weight:500;color:var(--text);font-family:var(--font);outline:none;width:100%">
+          <div style="display:flex;gap:10px">
+            <select style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 10px;border-radius:var(--r);font-size:12px;font-family:var(--font);outline:none;flex:1">
+              <option>Select State…</option>
+              <option>Assam</option><option>Manipur</option><option>Nagaland</option><option>Meghalaya</option><option>Sikkim</option><option>Mizoram</option><option>Tripura</option><option>Arunachal Pradesh</option><option>NE India (General)</option>
+            </select>
+            <select style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 10px;border-radius:var(--r);font-size:12px;font-family:var(--font);outline:none;flex:1">
+              <option>Select Category…</option>
+              <option>Politics</option><option>Wildlife</option><option>Flood / Disaster</option><option>Infrastructure</option><option>Economy</option><option>Culture</option><option>Sports</option>
+            </select>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);min-height:160px;padding:12px 14px;font-size:13px;color:var(--text3)" contenteditable="true">Start writing your article here. Supports Assamese (অসমীয়া), Nepali (नेपाली), Bengali (বাংলা), Meitei (মৈতৈলোন্), and English…</div>
+          <div style="display:flex;gap:8px;border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;background:var(--bg3)">
+            <span style="font-size:11px;color:var(--text3);font-weight:500">SEO SLUG:</span>
+            <span style="font-size:11px;font-family:var(--mono);color:var(--gold)">/assam/article-headline-auto-generated</span>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+            <button class="btn btn-ghost" onclick="document.getElementById('new-article-modal').style.display='none'">Cancel</button>
+            <button class="btn btn-ghost">Save Draft</button>
+            <button class="btn btn-ghost">Schedule</button>
+            <button class="btn btn-gold">Submit for Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const views = ['dashboard','articles','seo','users','analytics','ads'];
+
+function switchTab(el, viewId) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  if (viewId) {
+    views.forEach(v => {
+      const el = document.getElementById('view-'+v);
+      if (el) el.style.display = 'none';
+    });
+    const target = document.getElementById('view-'+viewId);
+    if (target) target.style.display = 'block';
+    const titleMap = {
+      dashboard: 'Dashboard <span>/ Overview</span>',
+      articles: 'Articles <span>/ Manage</span>',
+      seo: 'SEO Manager <span>/ Health</span>',
+      users: 'Users & Roles <span>/ RBAC</span>',
+      analytics: 'Analytics <span>/ Traffic</span>',
+      ads: 'Advertisements <span>/ Zones</span>',
+    };
+    document.getElementById('topbar-title').innerHTML = titleMap[viewId] || el.textContent.trim() + ' <span>/ Module</span>';
+  }
+}
+
+function switchToTab(viewId) {
+  const navItems = document.querySelectorAll('.nav-item');
+  const map = {articles: 1, seo: 14, users: 16, analytics: 17, ads: 11};
+  switchTab(navItems[map[viewId]||0], viewId);
+}
+
+function showNewArticle() {
+  const m = document.getElementById('new-article-modal');
+  m.style.display = 'flex';
+}
+
+function toggleBreaking(btn) {
+  const bar = btn.closest('.breaking-bar');
+  if (btn.textContent.includes('LIVE')) {
+    btn.textContent = 'OFF ○';
+    bar.style.opacity = '0.5';
+  } else {
+    btn.textContent = 'LIVE ●';
+    bar.style.opacity = '1';
+  }
+}
+
+// Build sparkline
+const data = [31,28,35,40,38,45,48];
+const max = Math.max(...data);
+const row = document.getElementById('spark-row');
+if (row) {
+  data.forEach((v,i) => {
+    const bar = document.createElement('div');
+    bar.className = 'spark-bar' + (i===6?' today':'');
+    bar.style.height = Math.round((v/max)*100)+'%';
+    bar.title = v+'K visitors';
+    row.appendChild(bar);
+  });
+}
+
+// Language pills toggle
+document.querySelectorAll('.lang-pill').forEach(p => {
+  p.addEventListener('click', function(){
+    const parent = this.closest('.lang-pills') || this.closest('div');
+    parent.querySelectorAll('.lang-pill').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Tab switching in panels
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', function(){
+    const row = this.closest('.tab-row');
+    row.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
